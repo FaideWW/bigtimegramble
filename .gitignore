@@ -1,2 +1,7 @@
 .idea
 node_modules
+config.js
+public/.sass-cache
+*.compiled.js
+*.compiled.js.map
+*.css
