@@ -4,9 +4,9 @@
  * Created by faide on 12/12/2015.
  */
 
-import request from 'request';
-import cheerio from 'cheerio';
-import moment from 'moment-timezone';
+const request = require('request');
+const cheerio = require('cheerio');
+const moment = require('moment');
 
 /**
  * Fetches game data for a given game ID
@@ -84,7 +84,12 @@ const fetchDivisionsAndTeams = () => new Promise((resolve, reject) => {
     }).get();
     resolve({$, divisions});
   });
-}).then(({$, divisions}) => {
+}).then((args) => {
+
+  // destructuring PLS
+  const $ = args.$;
+  const divisions = args.divisions;
+
   const divisionObj = {};
   divisions.forEach((division) => {
     divisionObj[division.name] = [];
@@ -94,7 +99,7 @@ const fetchDivisionsAndTeams = () => new Promise((resolve, reject) => {
       const fullTeamName = $teamData.text();
       const matchTeamName = $(element).find('.entry-title').text().match(/ESPN: (.+)/);
 
-      if (matchTeamName === null) return reject('Could not find team name');
+      if (matchTeamName === null) throw new Error('Could not find team name');
 
       const teamName = matchTeamName[1];
       const teamLocation = fullTeamName.replace(` ${teamName}`, '');
@@ -104,10 +109,11 @@ const fetchDivisionsAndTeams = () => new Promise((resolve, reject) => {
 
       const clubID = matchClubID[1];
 
+      // all column names in pg are lowercase
       const team = {
-        espnID: clubID,
+        espnid: clubID,
         location: teamLocation,
-        teamName: teamName,
+        teamname: teamName,
       };
       divisionObj[division.name].push(team);
     });
@@ -133,7 +139,7 @@ const getTodaysGames = () => {
 
 
 
-export {
+module.exports = {
   getTodaysGames,
   fetchDivisionsAndTeams
 };

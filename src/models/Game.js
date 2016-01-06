@@ -2,12 +2,13 @@
  * Created by faide on 12/13/2015.
  */
 
-import bookshelf from '../bookshelf';
+const bookshelf = require('../bookshelf');
 
 const Game = bookshelf.model('Game', bookshelf.Model.extend({
   tableName: 'btg_game',
+  idAttribute: 'gameid',
   away: () => this.belongsTo('Team', 'awayTeam'),
   home: () => this.belongsTo('Team', 'homeTeam'),
 }));
 
-export default Game;
+module.exports = Game;

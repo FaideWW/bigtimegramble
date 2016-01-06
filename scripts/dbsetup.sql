@@ -14,12 +14,12 @@ CREATE TYPE btg_player_position as ENUM ('C', 'RW', 'LW', 'D', 'G');
 CREATE TYPE btg_period as ENUM ('1st', '2nd', '3rd', 'OT', 'SO');
 
 CREATE TABLE btg_division(
-  divisionID serial primary key,
-  name character varying(100) not null
+  divisionID serial primary key UNIQUE,
+  name character varying(100) not null UNIQUE
 );
 
 CREATE TABLE btg_record(
-  recordID serial primary key,
+  recordID serial primary key UNIQUE,
   gp smallint not null default 0,
   w smallint not null default 0,
   l smallint not null default 0,
@@ -28,9 +28,9 @@ CREATE TABLE btg_record(
 
 CREATE TABLE btg_team (
   teamID serial primary key,
-  espnID character varying(5),
+  espnID character varying(5) UNIQUE,
   location character varying(100) not null,
-  teamName character varying (100) not null,
+  teamName character varying (100) not null UNIQUE,
   divisionID int references btg_division(divisionID),
   recordID int references btg_record(recordID)
 );
@@ -58,8 +58,8 @@ CREATE TABLE btg_statistic (
 );
 
 CREATE TABLE btg_player (
-  playerID serial primary key,
-  name character varying(200) not null,
+  playerID serial primary key UNIQUE,
+  name character varying(200) not null UNIQUE,
   teamID int references btg_team(teamID),
   pos btg_player_position not null,
   jerseyNum smallint not null,
@@ -71,8 +71,8 @@ CREATE TABLE btg_player (
 );
 
 CREATE TABLE btg_game (
-  gameID serial primary key,
-  espnID int,
+  gameID serial primary key UNIQUE,
+  espnID int UNIQUE,
   awayTeam int references btg_team(teamID),
   homeTeam int references btg_team(teamID),
   startTime timestamp with time zone,
@@ -82,7 +82,7 @@ CREATE TABLE btg_game (
 );
 
 CREATE TABLE btg_goal (
-  goalID serial primary key,
+  goalID serial primary key UNIQUE,
   gameID int references btg_game(gameID),
   period btg_period not null,
   time smallint default 0,
@@ -92,7 +92,7 @@ CREATE TABLE btg_goal (
 );
 
 CREATE TABLE btg_penalty (
-  penaltyID serial primary key,
+  penaltyID serial primary key UNIQUE,
   gameID int references btg_game(gameID),
   period btg_period not null,
   time smallint not null default 0,
